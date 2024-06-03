@@ -1,0 +1,51 @@
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+}
+
+.navbar {
+	background-color: #333;
+	overflow: hidden;
+}
+
+.navbar-container {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	padding: 1rem;
+}
+
+.nav-link {
+	color: white;
+	text-decoration: none;
+	padding: 0.5rem 1rem;
+}
+
+.nav-link:hover {
+	background-color: #575757;
+}
+
+.page {
+	padding: 2rem;
+}
+
+.button-general {
+	background-color: #32af46;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+@media (max-width: 600px) {
+	.navbar-container {
+		flex-direction: column;
+	}
+
+	.nav-link {
+		padding: 1rem;
+		width: 100%;
+		text-align: center;
+	}
+}
