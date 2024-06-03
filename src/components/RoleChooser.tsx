@@ -16,15 +16,43 @@ export default function RoleChooser({ users, selectedRole }: ({ users: User[], s
   const handleAddToRole = async () => {
     await updateUserRole.mutate({ userId: selectedUserId, roleId: selectedRole.id });
   };
+
+  const handleUserDrop = async (userId: number, roleId: number) => {
+    if (roleId === selectedRole.id) {
+      await updateUserRole.mutate({ userId: selectedUserId, roleId: selectedRole.id });
+    } else {
+      await updateUserRole.mutate({ userId: selectedUserId, roleId: 1 });
+    }
+  };
+
+  const handleDragStart = (event: React.DragEvent, userId: number) => {
+    event.dataTransfer.setData('userId', userId.toString());
+  };
+
+  const handleDrop = async (event: React.DragEvent, newRoleId: number) => {
+    const userId = parseInt(event.dataTransfer.getData('userId'), 10);
+    handleUserDrop(userId, newRoleId);
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+  };
+
   return (
     <div className={styles['role-chooser-container']}>
-      <ul className={styles['role-chooser-user-with-role']}>
+      <ul
+        className={styles['role-chooser-user-with-role']}
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, selectedRole.id)}
+      >
         {users.filter((user) => user.role === selectedRole.id).map((user) => (
           <li
             key={user.id}
             onClick={() => setSelectedUserId(user.id)}
             role="presentation"
             className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
+            draggable
+            onDragStart={(e) => handleDragStart(e, user.id)}
           >
             {user.name}
           </li>
@@ -48,18 +76,24 @@ export default function RoleChooser({ users, selectedRole }: ({ users: User[], s
           Add to Role
         </button>
       </div>
-      <div className={styles['role-chooser-all-users']}>
+      <ul
+        className={styles['role-chooser-all-users']}
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, 1)}
+      >
         {users.filter((user) => user.role !== selectedRole.id).map((user) => (
           <li
             key={user.id}
             onClick={() => setSelectedUserId(user.id)}
             role="presentation"
             className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
+            draggable
+            onDragStart={(e) => handleDragStart(e, user.id)}
           >
             {user.name}
           </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
