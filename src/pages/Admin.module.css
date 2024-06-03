@@ -1,0 +1,22 @@
+.role-label {
+	font-size: 20px;
+}
+
+.role-select {
+	margin-left: 20px;
+	width: 200px;
+	height: 40px;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.role-permissions {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+.role-modify {
+
+}

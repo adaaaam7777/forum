@@ -1,0 +1,53 @@
+.role-chooser-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.role-chooser-user-with-role {
+	width: 30%;
+	max-width: 300px;
+	border: 1px solid black;
+	height: 500px;
+	margin-block-start: 0;
+	padding-inline-start: 0;
+}
+
+.role-chooser-user-with-role li {
+	cursor: pointer;
+	list-style-type: none;
+}
+
+.role-chooser-all-users {
+	width: 30%;
+	max-width: 300px;
+	border: 1px solid black;
+	height: 500px;
+}
+
+.role-chooser-all-users li {
+	cursor: pointer;
+	list-style-type: none;
+}
+
+.role-chooser-interchange {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.role-chooser-interchange button {
+	margin: 20px ;
+}
+
+.role-chooser-selected-user {
+	background-color: dodgerblue;
+	color: white;
+}
+
+.role-chooser-container button:disabled {
+	background-color: #cccccc;
+}
+
+
