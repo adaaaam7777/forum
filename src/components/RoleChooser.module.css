@@ -5,12 +5,15 @@
 }
 
 .role-chooser-user-with-role {
-	width: 30%;
 	max-width: 300px;
-	border: 1px solid black;
+	width: 30%;
+}
+
+.role-chooser-user-with-role ul {
 	height: 500px;
 	margin-block-start: 0;
 	padding-inline-start: 0;
+	border: 1px solid black;
 }
 
 .role-chooser-user-with-role li {
@@ -21,8 +24,13 @@
 .role-chooser-all-users {
 	width: 30%;
 	max-width: 300px;
-	border: 1px solid black;
+}
+
+.role-chooser-all-users ul {
 	height: 500px;
+	margin-block-start: 0;
+	padding-inline-start: 0;
+	border: 1px solid black;
 }
 
 .role-chooser-all-users li {

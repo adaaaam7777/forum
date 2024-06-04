@@ -4,9 +4,13 @@ import styles from './RoleChooser.module.css';
 import User from '../interfaces/User';
 import { Role } from '../interfaces/Role';
 import { useUpdateUserRole } from '../api/adminApi';
+import UserOrderBy from '../enums/user-order-by.enum';
+import RoleChooserOrderActions from './RoleChooserOrderActions';
 
 export default function RoleChooser({ users, selectedRole }: ({ users: User[], selectedRole: Role })) {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [userWithRoleOrderBy, setUserWithRoleOrderBy] = useState<UserOrderBy>(UserOrderBy.NONE);
+  const [restUsersOrderBy, setRestUsersOrderBy] = useState<UserOrderBy>(UserOrderBy.NONE);
   const queryClient = useQueryClient();
   const updateUserRole = useUpdateUserRole(queryClient);
   const handleRemoveFromRole = async () => {
@@ -38,26 +42,45 @@ export default function RoleChooser({ users, selectedRole }: ({ users: User[], s
     event.preventDefault();
   };
 
+  const sortUsers = (userA: User, userB: User, orderBy: UserOrderBy): number => {
+    switch (orderBy) {
+      case UserOrderBy.NONE:
+        return 0;
+      case UserOrderBy.NAME:
+        return userA.name.localeCompare(userB.name);
+      case UserOrderBy.ID:
+        return userA.id - userB.id;
+      default:
+        throw new Error(`Invalid UserOrderBy value: ${orderBy}`);
+    }
+  };
+
   return (
     <div className={styles['role-chooser-container']}>
-      <ul
-        className={styles['role-chooser-user-with-role']}
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, selectedRole.id)}
-      >
-        {users.filter((user) => user.role === selectedRole.id).map((user) => (
-          <li
-            key={user.id}
-            onClick={() => setSelectedUserId(user.id)}
-            role="presentation"
-            className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
-            draggable
-            onDragStart={(e) => handleDragStart(e, user.id)}
-          >
-            {user.name}
-          </li>
-        ))}
-      </ul>
+      <div className={styles['role-chooser-user-with-role']}>
+        <RoleChooserOrderActions setUserOrderBy={setUserWithRoleOrderBy} />
+        <ul
+          className={styles['role-chooser-user-with-role-list']}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, selectedRole.id)}
+        >
+          {users
+            .filter((user) => user.role === selectedRole.id)
+            .sort((a, b) => sortUsers(a, b, userWithRoleOrderBy))
+            .map((user) => (
+              <li
+                key={user.id}
+                onClick={() => setSelectedUserId(user.id)}
+                role="presentation"
+                className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
+                draggable
+                onDragStart={(e) => handleDragStart(e, user.id)}
+              >
+                {user.name}
+              </li>
+            ))}
+        </ul>
+      </div>
       <div className={styles['role-chooser-interchange']}>
         <button
           type="button"
@@ -76,24 +99,30 @@ export default function RoleChooser({ users, selectedRole }: ({ users: User[], s
           Add to Role
         </button>
       </div>
-      <ul
-        className={styles['role-chooser-all-users']}
-        onDragOver={handleDragOver}
-        onDrop={(e) => handleDrop(e, 1)}
-      >
-        {users.filter((user) => user.role !== selectedRole.id).map((user) => (
-          <li
-            key={user.id}
-            onClick={() => setSelectedUserId(user.id)}
-            role="presentation"
-            className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
-            draggable
-            onDragStart={(e) => handleDragStart(e, user.id)}
-          >
-            {user.name}
-          </li>
-        ))}
-      </ul>
+      <div className={styles['role-chooser-all-users']}>
+        <RoleChooserOrderActions setUserOrderBy={setRestUsersOrderBy} />
+        <ul
+          className={styles['role-chooser-all-users-list']}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, 1)}
+        >
+          {users
+            .filter((user) => user.role !== selectedRole.id)
+            .sort((a, b) => sortUsers(a, b, restUsersOrderBy))
+            .map((user) => (
+              <li
+                key={user.id}
+                onClick={() => setSelectedUserId(user.id)}
+                role="presentation"
+                className={selectedUserId === user.id ? styles['role-chooser-selected-user'] : ''}
+                draggable
+                onDragStart={(e) => handleDragStart(e, user.id)}
+              >
+                {user.name}
+              </li>
+            ))}
+        </ul>
+      </div>
     </div>
   );
 }
