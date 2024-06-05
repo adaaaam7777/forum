@@ -1,0 +1,64 @@
+.profile-permissions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 40px 0;
+    gap: 30px;
+}
+
+.profile-permissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 30%
+}
+
+.profile-permission-has {
+    background-color: lawngreen;
+}
+
+.profile-permission-has-not {
+    background-color: tomato;
+}
+
+.profile-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.profile-form div {
+    width: 400px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.profile-form label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+
+.profile-form input {
+    margin-left: auto;
+}
+
+.profile-modify-button {
+
+}
+
+.profile-form-field {
+    display: flex;
+    flex-direction: column;
+}

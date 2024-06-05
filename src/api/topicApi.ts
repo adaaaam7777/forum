@@ -1,8 +1,9 @@
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { API_URL } from '../config';
 import User from '../interfaces/User';
+import { Topic } from '../interfaces/Topic';
 
-export const fetchTopics = async () => {
+export const fetchTopics = async (): Promise<Topic[]> => {
   const response = await fetch(`${API_URL}/topics`);
   if (!response.ok) {
     throw new Error('Failed to fetch user data');
@@ -10,12 +11,12 @@ export const fetchTopics = async () => {
   return response.json();
 };
 
-export const createTopic = (title: string, body: string) => fetch(`${API_URL}/topic/add`, {
+export const createTopic = (title: string, body: string, author: User) => fetch(`${API_URL}/topic/add`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify({ title, body }),
+  body: JSON.stringify({ title, body, author }),
 });
 
 export const addCommentToTopic = (topicId: number, author: User, body: string) => fetch(`${API_URL}/topic/${topicId}/comment/add`, {
@@ -45,10 +46,10 @@ export const deleteComment = (topicId: number, commentId: number) => fetch(`${AP
   method: 'DELETE',
 });
 
-export const useTopics = () => useQuery({ queryKey: ['topics'], queryFn: () => fetchTopics() });
+export const useTopics = () => useQuery<Topic[]>({ queryKey: ['topics'], queryFn: () => fetchTopics() });
 
-export const useCreateTopic = (title: string, body: string, queryClient: QueryClient) => useMutation({
-  mutationFn: () => createTopic(title, body),
+export const useCreateTopic = (queryClient: QueryClient) => useMutation({
+  mutationFn: ({ title, body, author }) => createTopic(title, body, author),
   onSuccess: () => queryClient.invalidateQueries({ queryKey: ['topics'] }),
 });
 

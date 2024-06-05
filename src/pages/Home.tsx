@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreateTopic, useTopics } from '../api/topicApi';
 import styles from './Home.module.css';
 import TopicComments from '../components/TopicComments';
+import { useUser } from '../api/adminApi';
+import User from '../interfaces/User';
 
 export default function Home() {
-  const { data: topics, isLoading, isError } = useTopics();
+  const { data: topics, isLoading: isTopicsLoading, isError: isTopicsError } = useTopics();
+  const { data: user, isLoading: isUserLoading, isError: isUserError } = useUser<User>(2);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [expandedTopicId, setExpandedTopicId] = useState<number | null>(null);
   const [newTopicError, setNewTopicError] = useState('');
   const queryClient = useQueryClient();
-  const createTopic = useCreateTopic(title, body, queryClient);
+  const createTopic = useCreateTopic(queryClient);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: Unable to fetch topics</div>;
+  if (isTopicsLoading || isUserLoading) return <div>Loading...</div>;
+  if (isTopicsError || isUserError) return <div>Error: Unable to fetch</div>;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,7 +31,7 @@ export default function Home() {
     }
 
     try {
-      await createTopic.mutate();
+      await createTopic.mutate({ title, body, author: user.data });
       setTitle('');
       setBody('');
     } catch (error) {
@@ -48,7 +51,7 @@ export default function Home() {
           <li key={topic.id}>
             <h2 onClick={() => toggleComments(topic.id)} style={{ cursor: 'pointer' }} role="presentation">{topic.title}</h2>
             <p>{topic.body}</p>
-            {expandedTopicId === topic.id ? <TopicComments topicId={topic.id} comments={topic.comments} /> : null }
+            {expandedTopicId === topic.id ? <TopicComments topicId={topic.id} comments={topic.comments} author={user.data} /> : null }
           </li>
         ))}
       </ul>

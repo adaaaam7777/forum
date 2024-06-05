@@ -9,24 +9,22 @@ import CommentInput from './CommentInput';
 
 export default function TopicComments({
   comments,
+  author,
   topicId,
   isSubComments = false,
-} : { comments: Comment[], topicId: number, isSubComments: boolean }) {
+} : { comments: Comment[], author: User, topicId: number, isSubComments: boolean }) {
   const currentCommentToReplyToId = useStore((state: StoreState) => state.currentCommentToReplyToId);
   const setCurrentCommentToReplyToId = useStore((state) => state.setCurrentCommentToReplyToId);
   const [commentValue, setCommentValue] = useState<string>('');
   const queryClient = useQueryClient();
-  const author: User = {
-    id: 0,
-    name: 'admin',
-    email: 'admin@admin.com',
-    role: 0,
-  };
   const addCommentToTopic = useAddCommentToTopic(topicId, queryClient);
   const addCommentToComment = useAddCommentToComment(topicId, queryClient);
   const deleteComment = useDeleteComment(queryClient);
 
   const addComment = async (commentId: number | null) => {
+    if (!commentValue) {
+      return;
+    }
     try {
       if (commentId) {
         await addCommentToComment.mutate({ commentId, author, body: commentValue });
@@ -52,7 +50,9 @@ export default function TopicComments({
           <li key={comment.id}>
             <div
               className={styles.comment}
-              onClick={() => setCurrentCommentToReplyToId(`${comment.id}${comment.author.name}`)}
+              onClick={() => setCurrentCommentToReplyToId(
+                currentCommentToReplyToId === `${comment.id}${comment.author.name}` ? '' : `${comment.id}${comment.author.name}`,
+              )}
               role="presentation"
             >
               <span className={styles['comment-author']}>{comment.author.name}</span>
@@ -80,7 +80,7 @@ export default function TopicComments({
           </li>
         ))}
       </ul>
-      {!isSubComments ? (
+      {!isSubComments && !currentCommentToReplyToId ? (
         <CommentInput
           commentValue={commentValue}
           setCommentValue={setCommentValue}

@@ -21,6 +21,7 @@ module.exports = {
 		'import/no-absolute-path': 'off',
 		'react/react-in-jsx-scope': 'off',
 		'max-len': ["error", { "code": 140 }],
-		'no-bitwise': 'off'
+		'no-bitwise': 'off',
+		'no-restricted-syntax': ['off', 'ForOfStatement'],
 	},
 }

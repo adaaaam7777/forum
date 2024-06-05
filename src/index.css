@@ -38,6 +38,13 @@ body {
 	cursor: pointer;
 }
 
+.form-error {
+	display: flex;
+	justify-content: flex-start;
+	color: red;
+	font-size: 12px;
+}
+
 @media (max-width: 600px) {
 	.navbar-container {
 		flex-direction: column;
